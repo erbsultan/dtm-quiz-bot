@@ -101,6 +101,8 @@ async def open_materials(callback: CallbackQuery, state: FSMContext) -> None:
     questions: list[dict[str, Any]] = data.get("questions", [])
     language_code = data.get("language_code", "uz")
 
+    await callback.message.edit_reply_markup(reply_markup=None)
+
     for material in get_materials_to_send(questions, language_code):
         if material["distribution"] == "send_excerpt" and material["path"]:
             await callback.message.answer_document(
@@ -113,7 +115,7 @@ async def open_materials(callback: CallbackQuery, state: FSMContext) -> None:
         await _send_split_callback_message(callback, text)
 
     await callback.message.answer(
-        t(language_code, "start_test"),
+        t(language_code, "materials_shown"),
         reply_markup=materials_after_open_keyboard(language_code),
     )
     await callback.answer()
