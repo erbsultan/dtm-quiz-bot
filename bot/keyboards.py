@@ -6,6 +6,7 @@ START_QUIZ_TEXTS = {t("uz", "start_quiz"), t("ru", "start_quiz"), "Start quiz"}
 STATS_TEXTS = {t("uz", "my_statistics"), t("ru", "my_statistics"), "My statistics"}
 HELP_TEXTS = {t("uz", "help"), t("ru", "help"), "Help"}
 SETTINGS_TEXTS = {t("uz", "settings"), t("ru", "settings")}
+REPEAT_MISTAKES_TEXTS = {t("uz", "repeat_mistakes"), t("ru", "repeat_mistakes")}
 
 
 def language_keyboard() -> InlineKeyboardMarkup:
@@ -23,6 +24,7 @@ def main_menu_keyboard(language_code: str = "uz") -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=t(language_code, "start_quiz"))],
+            [KeyboardButton(text=t(language_code, "repeat_mistakes"))],
             [KeyboardButton(text=t(language_code, "my_statistics")), KeyboardButton(text=t(language_code, "help"))],
             [KeyboardButton(text=t(language_code, "settings"))],
         ],

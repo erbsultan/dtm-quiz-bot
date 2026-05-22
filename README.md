@@ -2,7 +2,7 @@
 
 Telegram bot for Uzbekistan university entrance exam preparation. The project is built as a public portfolio backend project with a clean, extendable Python codebase.
 
-Stage 2 turns the Stage 1 quiz MVP into a DTM-style preparation bot with bilingual Uzbek/Russian UI, bilingual questions, configurable exam profiles, and DTM-style scoring.
+Stage 3 adds progress analytics on top of the Stage 2 DTM-style quiz: attempt comparison, trends, strong and weak subjects, weak topic detection, and mistake review mode.
 
 ## Features
 
@@ -15,7 +15,12 @@ Stage 2 turns the Stage 1 quiz MVP into a DTM-style preparation bot with bilingu
 - PostgreSQL persistence for users, attempts, and answer results
 - Configurable DTM scoring from JSON
 - Score breakdown by subject
-- Basic statistics with score fields
+- Attempt comparison with previous result
+- Progress trends over recent attempts
+- Strong and weak subject detection
+- Weak topic detection for revision
+- Mistake review quiz mode
+- Improved statistics with analytics
 - Docker Compose setup with PostgreSQL
 - Alembic migrations
 
@@ -44,6 +49,7 @@ bot/
   services/
     quiz_service.py
     scoring_service.py
+    progress_service.py
     stats_service.py
   db/
 data/
@@ -196,6 +202,20 @@ The scoring service calculates:
 - subject breakdown
 
 Stage 2 defaults users to profile `60310200`. Profile selection UI can be added later.
+
+## Progress Analytics
+
+Stage 3 uses saved `TestAttempt` and `AnswerResult` records to show preparation progress:
+
+- previous vs current attempt comparison after each completed quiz
+- trend over the latest attempts
+- strongest and weakest subjects with at least 2 answered questions
+- weak topics and subtopics with at least 2 answered questions
+- compact final review of wrong answers from the current attempt
+
+The `Repeat mistakes` / `Xatolarni takrorlash` / `Повторить ошибки` menu action builds a new quiz from previously missed question IDs. It avoids duplicate question IDs and limits the review quiz to 10 questions for this stage.
+
+Weak-topics quiz mode is intentionally left for a later stage. The analytics needed for it already exists in `bot/services/progress_service.py`.
 
 ## Security Notes
 

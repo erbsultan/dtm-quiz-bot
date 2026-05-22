@@ -7,6 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.db.models import AnswerResult, TestAttempt, User
 from bot.locales import DEFAULT_LANGUAGE, normalize_language, subject_name, t
+from bot.services.progress_service import (
+    TREND_DECLINE,
+    TREND_IMPROVEMENT,
+    TREND_NOT_ENOUGH_DATA,
+    TREND_STABLE,
+)
 
 
 async def get_or_create_user(
@@ -66,6 +72,7 @@ async def save_quiz_attempt(
     answers: list[dict[str, Any]],
     started_at_iso: str,
     scoring_result: dict[str, Any],
+    mode: str = "sample",
 ) -> TestAttempt:
     user = await get_or_create_user(session, telegram_user)
     started_at = datetime.fromisoformat(started_at_iso)
@@ -79,7 +86,7 @@ async def save_quiz_attempt(
 
     attempt = TestAttempt(
         user_id=user.id,
-        mode="sample",
+        mode=mode,
         subject=", ".join(subjects),
         topic=", ".join(topics),
         total_questions=total_questions,
@@ -214,6 +221,61 @@ def format_result(
     )
 
 
+def format_attempt_comparison(comparison: dict[str, Any] | None, language_code: str) -> str:
+    language = normalize_language(language_code)
+    if comparison is None:
+        return t(language, "first_attempt_comparison")
+
+    return (
+        f"{t(language, 'comparison_title')}\n"
+        f"{t(language, 'previous_accuracy')}: {_format_number(comparison['previous_accuracy'])}%\n"
+        f"{t(language, 'current_accuracy')}: {_format_number(comparison['current_accuracy'])}%\n"
+        f"{t(language, 'change')}: {_format_signed(comparison['accuracy_diff'])} {t(language, 'percentage_points')}\n\n"
+        f"{t(language, 'previous_score')}: {_format_number(comparison['previous_score'])}\n"
+        f"{t(language, 'current_score')}: {_format_number(comparison['current_score'])}\n"
+        f"{t(language, 'change')}: {_format_signed(comparison['score_diff'])}\n\n"
+        f"{t(language, 'trend')}: {t(language, _trend_key(comparison['trend']))}"
+    )
+
+
+def format_mistakes_review(
+    questions: list[dict[str, Any]],
+    answers: list[dict[str, Any]],
+    language_code: str,
+    limit: int = 5,
+) -> str | None:
+    language = normalize_language(language_code)
+    wrong_answers = [answer for answer in answers if not answer["is_correct"]]
+    if not wrong_answers:
+        return None
+
+    lines = [t(language, "mistakes_review_title"), ""]
+    for number, answer in enumerate(wrong_answers[:limit], start=1):
+        question = questions[answer["question_index"]]
+        selected_index = answer["selected_index"]
+        correct_index = question["correct_index"]
+        options = _localized(question["options"], language)
+        why_wrong = question.get("wrong_explanations", {}).get(language, {}).get(
+            str(selected_index),
+            _localized(question["explanation_correct"], language),
+        )
+        lines.extend(
+            [
+                f"{number}. {t(language, 'mistake_question')}: {_localized(question['question'], language)}",
+                f"{t(language, 'selected_answer')}: {chr(65 + selected_index)}. {options[selected_index]}",
+                f"{t(language, 'correct_answer')}: {chr(65 + correct_index)}. {options[correct_index]}",
+                f"{t(language, 'why_wrong')}: {why_wrong}",
+                "",
+            ]
+        )
+
+    remaining = len(wrong_answers) - limit
+    if remaining > 0:
+        lines.append(t(language, "more_mistakes", count=remaining))
+
+    return "\n".join(lines).strip()
+
+
 def _format_pages(page_start: int | None, page_end: int | None) -> str:
     if page_start and page_end and page_start != page_end:
         return f"{page_start}-{page_end}"
@@ -229,3 +291,16 @@ def _localized(value: dict[str, Any], language_code: str) -> Any:
 
 def _format_number(value: float | int) -> str:
     return f"{float(value):.1f}"
+
+
+def _format_signed(value: float | int) -> str:
+    return f"{float(value):+.1f}"
+
+
+def _trend_key(trend: str) -> str:
+    return {
+        TREND_IMPROVEMENT: "trend_improvement",
+        TREND_DECLINE: "trend_decline",
+        TREND_STABLE: "trend_stable",
+        TREND_NOT_ENOUGH_DATA: "trend_not_enough_data",
+    }.get(trend, "trend_stable")
