@@ -16,6 +16,8 @@ from bot.keyboards import (
     START_QUIZ_TEXTS,
     next_question_keyboard,
     options_keyboard,
+    resume_session_keyboard,
+    start_new_session_keyboard,
 )
 from bot.loader import QuestionLoaderError, load_questions
 from bot.locales import t
@@ -35,6 +37,18 @@ from bot.services.quiz_service import (
 from bot.services.materials_service import get_materials_to_send
 from bot.services.progress_service import get_attempt_comparison, get_mistake_question_ids
 from bot.services.scoring_service import calculate_score, get_exam_profile
+from bot.services.session_service import (
+    cancel_session,
+    complete_session,
+    create_session,
+    filter_questions_by_ids,
+    get_active_session,
+    has_missing_questions,
+    pause_session,
+    restore_answers_for_questions,
+    resume_session,
+    save_answer,
+)
 from bot.utils.text import safe_join_sections, split_long_message
 
 router = Router()
@@ -48,6 +62,13 @@ class QuizState(StatesGroup):
 async def show_quiz_sources(message: Message, state: FSMContext) -> None:
     async with async_session_factory() as session:
         language_code = await get_user_language(session, message.from_user)
+        user = await get_or_create_user(session, message.from_user)
+        active_session = await get_active_session(session, user.id)
+
+    if active_session:
+        await state.clear()
+        await message.answer(_format_resume_prompt(active_session, language_code), reply_markup=resume_session_keyboard(language_code))
+        return
 
     try:
         questions = load_questions(settings.questions_file)[:5]
@@ -68,6 +89,14 @@ async def repeat_mistakes(message: Message, state: FSMContext) -> None:
     async with async_session_factory() as session:
         language_code = await get_user_language(session, message.from_user)
         user = await get_or_create_user(session, message.from_user)
+        active_session = await get_active_session(session, user.id)
+        if active_session:
+            await state.clear()
+            await message.answer(
+                _format_resume_prompt(active_session, language_code),
+                reply_markup=resume_session_keyboard(language_code),
+            )
+            return
         mistake_ids = await get_mistake_question_ids(session, user.id, limit=10)
 
     if not mistake_ids:
@@ -132,8 +161,94 @@ async def back_to_menu(callback: CallbackQuery, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "quiz:begin")
 async def begin_quiz(callback: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    if not data.get("session_id"):
+        questions: list[dict[str, Any]] = data["questions"]
+        language_code = data.get("language_code", "uz")
+        mode = data.get("mode", "sample")
+        async with async_session_factory() as session:
+            user = await get_or_create_user(session, callback.from_user)
+            profile_code = await get_user_exam_profile_code(session, callback.from_user)
+            quiz_session = await create_session(
+                session=session,
+                user_id=user.id,
+                mode=mode,
+                language_code=language_code,
+                exam_profile_code=profile_code,
+                question_ids=[str(question["id"]) for question in questions],
+            )
+        await state.update_data(session_id=quiz_session.id)
+
     await state.set_state(QuizState.answering)
+    await callback.message.edit_reply_markup(reply_markup=None)
     await _send_current_question(callback, state)
+
+
+@router.callback_query(F.data == "quiz:resume")
+async def continue_quiz(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.message.edit_reply_markup(reply_markup=None)
+    async with async_session_factory() as session:
+        user = await get_or_create_user(session, callback.from_user)
+        active_session = await get_active_session(session, user.id)
+        if active_session is None:
+            language_code = user.language_code
+            await callback.message.answer(
+                t(language_code, "unfinished_session_not_found"),
+                reply_markup=start_new_session_keyboard(language_code),
+            )
+            await callback.answer()
+            return
+        active_session = await resume_session(session, active_session.id)
+
+    try:
+        all_questions = load_questions(settings.questions_file)
+    except QuestionLoaderError as exc:
+        await callback.message.answer(t(active_session.language_code, "quiz_load_error", error=exc))
+        await callback.answer()
+        return
+
+    question_ids = [str(question_id) for question_id in active_session.question_ids]
+    if has_missing_questions(all_questions, question_ids):
+        await callback.message.answer(
+            t(active_session.language_code, "session_questions_missing"),
+            reply_markup=start_new_session_keyboard(active_session.language_code),
+        )
+        await callback.answer()
+        return
+
+    questions = filter_questions_by_ids(all_questions, question_ids)
+    answers = restore_answers_for_questions(question_ids, active_session.answers or [])
+    await state.clear()
+    await state.update_data(
+        questions=questions,
+        current_index=active_session.current_question_index,
+        answers=answers,
+        started_at=active_session.started_at.isoformat(),
+        language_code=active_session.language_code,
+        mode=active_session.mode,
+        session_id=active_session.id,
+    )
+    await state.set_state(QuizState.answering)
+    if active_session.current_question_index >= len(questions):
+        await _finish_quiz(callback, state)
+        return
+    await _send_current_question(callback, state)
+
+
+@router.callback_query(F.data == "quiz:start_new")
+async def start_new_quiz(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.message.edit_reply_markup(reply_markup=None)
+    async with async_session_factory() as session:
+        language_code = await get_user_language(session, callback.from_user)
+        user = await get_or_create_user(session, callback.from_user)
+        active_session = await get_active_session(session, user.id)
+        if active_session:
+            await cancel_session(session, active_session.id)
+
+    await state.clear()
+    await callback.message.answer(t(language_code, "discarded_session"))
+    await _start_preparation(callback.message, state, language_code, mode="sample")
+    await callback.answer()
 
 
 @router.callback_query(QuizState.answering, F.data.startswith("answer:"))
@@ -158,12 +273,40 @@ async def handle_answer(callback: CallbackQuery, state: FSMContext) -> None:
         }
     )
     await state.update_data(answers=answers)
+    session_id = data.get("session_id")
+    if session_id:
+        async with async_session_factory() as session:
+            await save_answer(
+                session,
+                session_id,
+                {
+                    "question_id": str(question["id"]),
+                    "selected_index": selected_index,
+                    "correct_index": question["correct_index"],
+                    "is_correct": is_correct,
+                },
+            )
 
     await callback.message.edit_reply_markup(reply_markup=None)
     await callback.message.answer(
         format_answer_feedback(question, selected_index, data.get("language_code")),
         reply_markup=next_question_keyboard(data.get("language_code")),
     )
+    await callback.answer()
+
+
+@router.callback_query(QuizState.answering, F.data == "quiz:pause")
+async def pause_quiz(callback: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    session_id = data.get("session_id")
+    language_code = data.get("language_code", "uz")
+    if session_id:
+        async with async_session_factory() as session:
+            await pause_session(session, session_id)
+
+    await state.clear()
+    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.message.answer(t(language_code, "quiz_paused"), reply_markup=main_menu_keyboard(language_code))
     await callback.answer()
 
 
@@ -189,7 +332,7 @@ async def _send_current_question(callback: CallbackQuery, state: FSMContext) -> 
 
     await callback.message.answer(
         format_question(question, current_index + 1, len(questions), language_code),
-        reply_markup=options_keyboard(question["options"][language_code]),
+        reply_markup=options_keyboard(question["options"][language_code], language_code),
     )
     await callback.answer()
 
@@ -219,6 +362,9 @@ async def _finish_quiz(callback: CallbackQuery, state: FSMContext) -> None:
             mode=mode,
         )
         comparison = await get_attempt_comparison(session, attempt.user_id, attempt.id)
+        session_id = data.get("session_id")
+        if session_id:
+            await complete_session(session, session_id)
 
     sections = [
         format_result(correct_count, len(questions), scoring_result, language_code),
@@ -233,6 +379,21 @@ async def _finish_quiz(callback: CallbackQuery, state: FSMContext) -> None:
         await callback.message.answer(text)
     await state.clear()
     await callback.answer()
+
+
+async def _start_preparation(message: Message, state: FSMContext, language_code: str, mode: str) -> None:
+    try:
+        questions = load_questions(settings.questions_file)[:5]
+    except QuestionLoaderError as exc:
+        await message.answer(t(language_code, "quiz_load_error", error=exc))
+        return
+
+    await _prepare_quiz_state(state, questions, language_code, mode=mode)
+    await _send_split_message(
+        message,
+        build_sources_message(questions, language_code),
+        reply_markup=preparation_keyboard(language_code),
+    )
 
 
 async def _prepare_quiz_state(
@@ -250,6 +411,22 @@ async def _prepare_quiz_state(
         language_code=language_code,
         mode=mode,
     )
+
+
+def _format_resume_prompt(quiz_session: Any, language_code: str) -> str:
+    return t(
+        language_code,
+        "resume_prompt",
+        answered=len(quiz_session.answers or []),
+        total=len(quiz_session.question_ids or []),
+        mode=t(language_code, _mode_key(quiz_session.mode)),
+    )
+
+
+def _mode_key(mode: str) -> str:
+    if mode == "mistake_review":
+        return "mode_mistake_review"
+    return "mode_sample"
 
 
 async def _send_split_message(

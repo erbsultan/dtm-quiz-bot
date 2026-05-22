@@ -2,7 +2,7 @@
 
 Telegram bot for Uzbekistan university entrance exam preparation. The project is built as a public portfolio backend project with a clean, extendable Python codebase.
 
-Stage 5 adds study materials support before quizzes: the bot can show required sources and send local PDF excerpts when they exist.
+Stage 6 adds resumable quiz sessions: users can pause an unfinished test and continue it later, even after a bot restart.
 
 ## Features
 
@@ -26,6 +26,8 @@ Stage 5 adds study materials support before quizzes: the bot can show required s
 - Telegram message splitting for long result/review messages
 - Pre-quiz study materials screen
 - Optional local PDF excerpt sending
+- Persistent unfinished quiz sessions
+- Pause and resume quiz flow
 - Docker Compose setup with PostgreSQL
 - Alembic migrations
 
@@ -235,6 +237,32 @@ Stage 4 improves wrong-answer learning:
 - long result and review text is split with `bot/utils/text.py` before sending to Telegram
 
 The `Repeat mistakes` mode prioritizes questions missed most often, with recent mistakes used as the next priority.
+
+## Resumable Quiz Sessions
+
+Stage 6 persists active quiz progress in PostgreSQL with the `quiz_sessions` table.
+
+During a quiz, users can press the inline stop button:
+
+- `⏸ Остановить тест`
+- `⏸ Testni to'xtatish`
+
+The bot saves:
+
+- quiz mode
+- language
+- exam profile
+- question IDs
+- current question index
+- answers already given
+
+When the user presses Start quiz again, the bot offers:
+
+- continue unfinished test
+- start a new test and cancel only the unfinished session
+- go back to menu
+
+Cancelled or paused sessions do not count as completed attempts and do not affect statistics. Only completed quizzes create `TestAttempt` and `AnswerResult` records.
 
 ## Study Materials
 

@@ -26,6 +26,24 @@ MESSAGES = {
         "start_test": "▶️ Testni boshlash",
         "back_to_menu": "⬅️ Menyuga qaytish",
         "materials_shown": "📂 Materiallar ko'rsatildi.\nTayyor bo'lsangiz, testni boshlang.",
+        "stop_quiz": "⏸ Testni to'xtatish",
+        "quiz_paused": (
+            "⏸ Test to'xtatildi.\n"
+            "Javoblaringiz saqlandi. «Testni boshlash» tugmasini bossangiz, davom ettirishni taklif qilaman."
+        ),
+        "resume_prompt": (
+            "Sizda tugallanmagan test bor.\n\n"
+            "Progress: {answered}/{total} savol\n"
+            "Rejim: {mode}\n\n"
+            "Nima qilamiz?"
+        ),
+        "continue_quiz": "▶️ Davom ettirish",
+        "start_new_quiz": "🔄 Yangidan boshlash",
+        "discarded_session": "Tugallanmagan test bekor qilindi. Yangi test boshlaymiz.",
+        "unfinished_session_not_found": "Tugallanmagan test topilmadi. Yangi test boshlashingiz mumkin.",
+        "session_questions_missing": "Bu testdagi ayrim savollar hozir topilmadi. Yangi test boshlang.",
+        "mode_sample": "oddiy test",
+        "mode_mistake_review": "Xatolarni takrorlash",
         "next_question": "Keyingi savol",
         "question_header": "Savol {number}/{total}",
         "subject": "Fan",
@@ -128,6 +146,24 @@ MESSAGES = {
         "start_test": "▶️ Начать тест",
         "back_to_menu": "⬅️ Назад в меню",
         "materials_shown": "📂 Материалы показаны.\nКогда будете готовы, начните тест.",
+        "stop_quiz": "⏸ Остановить тест",
+        "quiz_paused": (
+            "⏸ Тест остановлен.\n"
+            "Ваш прогресс сохранён. Когда нажмёте «Начать тест», я предложу продолжить."
+        ),
+        "resume_prompt": (
+            "У вас есть незавершённый тест.\n\n"
+            "Прогресс: {answered}/{total} вопросов\n"
+            "Режим: {mode}\n\n"
+            "Что сделать?"
+        ),
+        "continue_quiz": "▶️ Продолжить",
+        "start_new_quiz": "🔄 Начать заново",
+        "discarded_session": "Незавершённый тест сброшен. Начинаем новый.",
+        "unfinished_session_not_found": "Незавершённый тест не найден. Можно начать новый тест.",
+        "session_questions_missing": "Некоторые вопросы этого теста сейчас не найдены. Начните новый тест.",
+        "mode_sample": "обычный тест",
+        "mode_mistake_review": "Повтор ошибок",
         "next_question": "Следующий вопрос",
         "question_header": "Вопрос {number}/{total}",
         "subject": "Предмет",

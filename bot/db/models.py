@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import BigInteger, Boolean, DateTime, Float, ForeignKey, Integer, String, func
+from sqlalchemy import BigInteger, Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from bot.db.database import Base
@@ -20,6 +20,7 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     attempts: Mapped[list["TestAttempt"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    quiz_sessions: Mapped[list["QuizSession"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
 
 class TestAttempt(Base):
@@ -60,3 +61,26 @@ class AnswerResult(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     attempt: Mapped["TestAttempt"] = relationship(back_populates="answers")
+
+
+class QuizSession(Base):
+    __tablename__ = "quiz_sessions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    mode: Mapped[str] = mapped_column(String(50), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    language_code: Mapped[str] = mapped_column(String(5), default="uz", server_default="uz")
+    exam_profile_code: Mapped[Optional[str]] = mapped_column(String(50))
+    current_question_index: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    question_ids: Mapped[list[str]] = mapped_column(JSON, default=list)
+    answers: Mapped[list[dict]] = mapped_column(JSON, default=list)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+    finished_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+
+    user: Mapped["User"] = relationship(back_populates="quiz_sessions")

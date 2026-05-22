@@ -33,11 +33,12 @@ def main_menu_keyboard(language_code: str = "uz") -> ReplyKeyboardMarkup:
     )
 
 
-def options_keyboard(options: list[str]) -> InlineKeyboardMarkup:
+def options_keyboard(options: list[str], language_code: str = "uz") -> InlineKeyboardMarkup:
     buttons = [
         [InlineKeyboardButton(text=f"{chr(65 + index)}. {option}", callback_data=f"answer:{index}")]
         for index, option in enumerate(options)
     ]
+    buttons.append([InlineKeyboardButton(text=t(language_code, "stop_quiz"), callback_data="quiz:pause")])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
@@ -66,6 +67,25 @@ def materials_after_open_keyboard(language_code: str = "uz") -> InlineKeyboardMa
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text=t(language_code, "start_test"), callback_data="quiz:begin")],
+            [InlineKeyboardButton(text=t(language_code, "back_to_menu"), callback_data="quiz:menu")],
+        ]
+    )
+
+
+def resume_session_keyboard(language_code: str = "uz") -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=t(language_code, "continue_quiz"), callback_data="quiz:resume")],
+            [InlineKeyboardButton(text=t(language_code, "start_new_quiz"), callback_data="quiz:start_new")],
+            [InlineKeyboardButton(text=t(language_code, "back_to_menu"), callback_data="quiz:menu")],
+        ]
+    )
+
+
+def start_new_session_keyboard(language_code: str = "uz") -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=t(language_code, "start_new_quiz"), callback_data="quiz:start_new")],
             [InlineKeyboardButton(text=t(language_code, "back_to_menu"), callback_data="quiz:menu")],
         ]
     )
