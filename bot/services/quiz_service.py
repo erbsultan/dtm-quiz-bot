@@ -182,7 +182,7 @@ def format_result(
     language_code: str,
 ) -> str:
     language = normalize_language(language_code)
-    accuracy = round((correct_count / total_questions) * 100, 2) if total_questions else 0.0
+    accuracy = round((correct_count / total_questions) * 100, 1) if total_questions else 0.0
     if accuracy >= 80:
         message = t(language, "interpret_high")
     elif accuracy >= 50:
@@ -194,14 +194,20 @@ def format_result(
     for item in scoring_result["breakdown"]:
         breakdown_lines.append(
             f"{subject_name(language, item['subject'])}: "
-            f"{item['correct']}/{item['total']} -> {item['score']} {t(language, 'points')}"
+            f"{item['correct']}/{item['total']} -> "
+            f"{_format_number(item['score'])} / {_format_number(item['max_score'])} {t(language, 'points')}"
         )
 
     return (
         f"{t(language, 'result_title')}\n"
         f"{t(language, 'correct_answers')}: {correct_count}/{total_questions}\n"
         f"{t(language, 'percentage')}: {accuracy}%\n"
-        f"{t(language, 'dtm_score')}: {scoring_result['total_score']} / {scoring_result['max_score']}\n\n"
+        "\n"
+        f"{t(language, 'mini_test_score')}: "
+        f"{_format_number(scoring_result['total_score'])} / {_format_number(scoring_result['max_score'])}\n"
+        f"{t(language, 'projected_full_score')}: "
+        f"{_format_number(scoring_result['projected_full_score'])} / "
+        f"{_format_number(scoring_result['full_max_score'])}\n\n"
         f"{t(language, 'by_subject')}\n"
         f"{chr(10).join(breakdown_lines)}\n\n"
         f"{message}"
@@ -219,3 +225,7 @@ def _format_pages(page_start: int | None, page_end: int | None) -> str:
 def _localized(value: dict[str, Any], language_code: str) -> Any:
     language = normalize_language(language_code)
     return value.get(language) or value.get(DEFAULT_LANGUAGE)
+
+
+def _format_number(value: float | int) -> str:
+    return f"{float(value):.1f}"

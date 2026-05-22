@@ -26,7 +26,12 @@ def test_calculate_dtm_score():
     result = calculate_score(questions, answers, profile)
 
     assert result["total_score"] == 4.2
-    assert result["max_score"] == 189.0
-    assert result["percentage"] == 2.22
-    assert result["breakdown"][0]["subject"] == "ozbekiston_tarixi"
-    assert result["breakdown"][1]["subject"] == "tarix"
+    assert result["max_score"] == 7.3
+    assert result["percentage"] == 57.53
+    assert result["accuracy_percent"] == 66.67
+    assert result["projected_full_score"] == 126.01
+    assert result["full_max_score"] == 189.0
+    assert result["breakdown"][0]["subject"] == "tarix"
+    assert result["breakdown"][0]["max_score"] == 6.2
+    assert result["breakdown"][1]["subject"] == "ozbekiston_tarixi"
+    assert result["breakdown"][1]["max_score"] == 1.1

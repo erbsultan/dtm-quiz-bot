@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.db.models import TestAttempt, User
 from bot.locales import t
 
+FULL_DTM_MAX_SCORE = 189.0
+
 
 async def get_user_statistics(session: AsyncSession, telegram_id: int) -> dict[str, float | int | None]:
     user_id_subquery = select(User.id).where(User.telegram_id == telegram_id).scalar_subquery()
@@ -32,6 +34,11 @@ async def get_user_statistics(session: AsyncSession, telegram_id: int) -> dict[s
         "average_score": round(float(average_score), 2) if average_score is not None else None,
         "best_score": round(float(best_score), 2) if best_score is not None else None,
         "latest_score": round(float(latest_attempt.score), 2) if latest_attempt else None,
+        "projected_average_full_score": (
+            round((float(average_accuracy) / 100) * FULL_DTM_MAX_SCORE, 2)
+            if average_accuracy is not None
+            else None
+        ),
     }
 
 
@@ -45,5 +52,6 @@ def format_statistics(stats: dict[str, float | int | None], language_code: str) 
         f"{t(language_code, 'average_accuracy')}: {stats['average_accuracy']}%\n"
         f"{t(language_code, 'average_score')}: {stats['average_score']}\n"
         f"{t(language_code, 'best_score')}: {stats['best_score']}\n"
-        f"{t(language_code, 'latest_score')}: {stats['latest_score']}"
+        f"{t(language_code, 'latest_score')}: {stats['latest_score']}\n"
+        f"{t(language_code, 'projected_average_full_score')}: {stats['projected_average_full_score']} / {FULL_DTM_MAX_SCORE}"
     )

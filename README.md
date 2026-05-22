@@ -190,8 +190,9 @@ Exam profiles live in `data/exam_profiles.example.json`. Scoring rules are confi
 The scoring service calculates:
 
 - total DTM score
-- max score
-- score percentage
+- possible score for the questions answered in the mini-test
+- mini-test score percentage
+- accuracy-based projected score for the full 189-point DTM scale
 - subject breakdown
 
 Stage 2 defaults users to profile `60310200`. Profile selection UI can be added later.

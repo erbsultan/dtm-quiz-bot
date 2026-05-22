@@ -45,6 +45,7 @@ def calculate_score(
     rules_by_subject = {rule["subject"]: rule for rule in profile["subjects"]}
     breakdown: list[dict[str, Any]] = []
     total_score = 0.0
+    possible_score = 0.0
 
     for subject in sorted({question["subject"] for question in questions}):
         subject_questions = [question for question in questions if question["subject"] == subject]
@@ -60,10 +61,10 @@ def calculate_score(
         rule = rules_by_subject.get(subject)
         points_per_correct = float(rule["points_per_correct"]) if rule else 0.0
         subject_group = rule["subject_group"] if rule else subject_questions[0].get("subject_group", "unknown")
-        configured_total = int(rule["questions"]) if rule else total
         score = round(correct * points_per_correct, 2)
-        max_score = round(configured_total * points_per_correct, 2)
+        max_score = round(total * points_per_correct, 2)
         total_score += score
+        possible_score += max_score
 
         breakdown.append(
             {
@@ -77,14 +78,24 @@ def calculate_score(
             }
         )
 
+    breakdown.sort(key=lambda item: (-item["points_per_correct"], -item["correct"], item["subject"]))
+
     profile_max_score = float(profile["max_score"])
     total_score = round(total_score, 2)
-    percentage = round((total_score / profile_max_score) * 100, 2) if profile_max_score else 0.0
+    possible_score = round(possible_score, 2)
+    correct_total = sum(1 for answer in answers if answer["is_correct"])
+    question_total = len(questions)
+    accuracy_percent = round((correct_total / question_total) * 100, 2) if question_total else 0.0
+    percentage = round((total_score / possible_score) * 100, 2) if possible_score else 0.0
+    projected_full_score = round((accuracy_percent / 100) * profile_max_score, 2)
 
     return {
         "total_score": total_score,
-        "max_score": profile_max_score,
+        "max_score": possible_score,
         "percentage": percentage,
+        "accuracy_percent": accuracy_percent,
+        "projected_full_score": projected_full_score,
+        "full_max_score": profile_max_score,
         "breakdown": breakdown,
     }
 
