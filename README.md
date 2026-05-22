@@ -2,7 +2,7 @@
 
 Telegram bot for Uzbekistan university entrance exam preparation. The project is built as a public portfolio backend project with a clean, extendable Python codebase.
 
-Stage 3 adds progress analytics on top of the Stage 2 DTM-style quiz: attempt comparison, trends, strong and weak subjects, weak topic detection, and mistake review mode.
+Stage 4 improves the learning flow so the bot behaves more like a DTM tutor: cleaner immediate feedback, detailed mistake review, repeat recommendations from sources, and safer Telegram message splitting.
 
 ## Features
 
@@ -21,6 +21,9 @@ Stage 3 adds progress analytics on top of the Stage 2 DTM-style quiz: attempt co
 - Weak topic detection for revision
 - Mistake review quiz mode
 - Improved statistics with analytics
+- Detailed final mistake explanations
+- Source-based "what to repeat" recommendations
+- Telegram message splitting for long result/review messages
 - Docker Compose setup with PostgreSQL
 - Alembic migrations
 
@@ -216,6 +219,19 @@ Stage 3 uses saved `TestAttempt` and `AnswerResult` records to show preparation 
 The `Repeat mistakes` / `Xatolarni takrorlash` / `Повторить ошибки` menu action builds a new quiz from previously missed question IDs. It avoids duplicate question IDs and limits the review quiz to 10 questions for this stage.
 
 Weak-topics quiz mode is intentionally left for a later stage. The analytics needed for it already exists in `bot/services/progress_service.py`.
+
+## Mistake Learning Flow
+
+Stage 4 improves wrong-answer learning:
+
+- immediate feedback stays short and clean
+- final mistake review shows the question, selected answer, correct answer, why the selected answer was wrong, a short correct explanation, and the source to repeat
+- wrong explanations are selected by the exact wrong option index from `wrong_explanations.uz` or `wrong_explanations.ru`
+- if a specific wrong explanation is missing, the bot falls back to the correct explanation
+- the final result includes a deduplicated "what to repeat" source list
+- long result and review text is split with `bot/utils/text.py` before sending to Telegram
+
+The `Repeat mistakes` mode prioritizes questions missed most often, with recent mistakes used as the next priority.
 
 ## Security Notes
 

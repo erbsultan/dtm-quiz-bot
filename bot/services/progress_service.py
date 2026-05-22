@@ -138,12 +138,13 @@ async def get_mistake_question_ids(session: Any, user_id: int, limit: int = 10) 
     from bot.db.models import AnswerResult, TestAttempt
 
     last_mistake_at = func.max(AnswerResult.created_at).label("last_mistake_at")
+    wrong_count = func.count(AnswerResult.id).label("wrong_count")
     result = await session.execute(
-        select(AnswerResult.question_id, last_mistake_at)
+        select(AnswerResult.question_id, wrong_count, last_mistake_at)
         .join(TestAttempt, TestAttempt.id == AnswerResult.attempt_id)
         .where(TestAttempt.user_id == user_id, AnswerResult.is_correct.is_(False))
         .group_by(AnswerResult.question_id)
-        .order_by(desc(last_mistake_at))
+        .order_by(desc(wrong_count), desc(last_mistake_at))
         .limit(limit)
     )
     return select_mistake_question_ids(result.all(), limit=limit)
@@ -222,3 +223,12 @@ def calculate_topic_performance(rows: list[dict[str, Any]], min_answers: int = 2
 
 def select_mistake_question_ids(rows: list[Any], limit: int = 10) -> list[str]:
     return [str(row[0]) for row in rows[:limit]]
+
+
+def prioritize_mistake_rows(rows: list[dict[str, Any]], limit: int = 10) -> list[str]:
+    sorted_rows = sorted(
+        rows,
+        key=lambda row: (int(row["wrong_count"]), row.get("last_wrong_at") or ""),
+        reverse=True,
+    )
+    return [str(row["question_id"]) for row in sorted_rows[:limit]]

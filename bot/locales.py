@@ -26,11 +26,11 @@ MESSAGES = {
         "question_header": "Savol {number}/{total}",
         "subject": "Fan",
         "topic": "Mavzu",
-        "correct": "To'g'ri!",
-        "incorrect": "Noto'g'ri. Siz {selected} javobini tanladingiz.",
+        "correct": "✅ To'g'ri!",
+        "incorrect": "❌ Noto'g'ri.",
         "already_answered": "Bu savolga javob berilgan.",
         "correct_answer": "To'g'ri javob",
-        "explanation": "Izoh",
+        "explanation": "Qisqa tushuntirish",
         "sources_title": "📚 Testdan oldin o'qish tavsiya qilinadi:",
         "pages": "Betlar",
         "section": "Mavzu",
@@ -76,13 +76,25 @@ MESSAGES = {
         "not_enough_subject_data": "Fanlar bo'yicha tahlil uchun hali ma'lumot yetarli emas.",
         "weak_topics": "Takrorlash kerak bo'lgan mavzular:",
         "not_enough_topic_data": "Mavzular bo'yicha tahlil uchun hali ma'lumot yetarli emas.",
-        "no_mistakes": "Hozircha takrorlash uchun xatolar yo'q. Avval test ishlang yoki mashqni davom ettiring.",
-        "mistake_review_sources": "Xatolarni takrorlash uchun savollar tayyor.",
+        "no_mistakes": "Hozircha takrorlash uchun xatolar yo'q. Oddiy test ishlang, men zaif savollaringizni yig'ib boraman.",
+        "mistake_review_sources": (
+            "🔁 Xatolarni takrorlash\n"
+            "Avval xato qilgan savollaringizni yig'dim. Avval qayta javob berib ko'ring, "
+            "oxirida tahlil olasiz."
+        ),
         "mistakes_review_title": "❌ Xatolar tahlili:",
         "mistake_question": "Savol",
         "selected_answer": "Siz tanladingiz",
         "why_wrong": "Nima uchun noto'g'ri",
-        "more_mistakes": "va yana {count} ta xato",
+        "more_mistakes": (
+            "Yana {count} ta xato bor. Ularni «Xatolarni takrorlash» tugmasi orqali qayta ishlashingiz mumkin."
+        ),
+        "correct_explanation": "Qisqa tushuntirish",
+        "repeat_for": "Takrorlash uchun",
+        "what_to_repeat": "📚 Nimani takrorlash kerak:",
+        "no_wrong_answers": "🎉 Ajoyib! Bu testda xatolar yo'q.",
+        "source_topic": "Mavzu",
+        "source_pages": "{pages}-betlar",
         },
     "ru": {
         "choose_language": "Выберите язык:",
@@ -107,11 +119,11 @@ MESSAGES = {
         "question_header": "Вопрос {number}/{total}",
         "subject": "Предмет",
         "topic": "Тема",
-        "correct": "Верно!",
-        "incorrect": "Неверно. Вы выбрали {selected}.",
+        "correct": "✅ Верно!",
+        "incorrect": "❌ Неверно.",
         "already_answered": "На этот вопрос уже дан ответ.",
         "correct_answer": "Правильный ответ",
-        "explanation": "Объяснение",
+        "explanation": "Короткое объяснение",
         "sources_title": "📚 Перед тестом желательно прочитать:",
         "pages": "Страницы",
         "section": "Тема",
@@ -157,13 +169,23 @@ MESSAGES = {
         "not_enough_subject_data": "Пока недостаточно данных для анализа предметов.",
         "weak_topics": "Темы для повторения:",
         "not_enough_topic_data": "Пока недостаточно данных для анализа тем.",
-        "no_mistakes": "Пока нет ошибок для повторения. Пройдите тест или продолжайте тренироваться.",
-        "mistake_review_sources": "Вопросы для повторения ошибок готовы.",
+        "no_mistakes": "Пока нет ошибок для повторения. Пройдите обычный тест, и я соберу ваши слабые вопросы.",
+        "mistake_review_sources": (
+            "🔁 Повтор ошибок\n"
+            "Я собрал вопросы, где вы ошибались раньше. Сначала попробуйте ответить заново, "
+            "а в конце получите разбор."
+        ),
         "mistakes_review_title": "❌ Разбор ошибок:",
         "mistake_question": "Вопрос",
         "selected_answer": "Вы выбрали",
         "why_wrong": "Почему неверно",
-        "more_mistakes": "и ещё {count} ошибок",
+        "more_mistakes": "И ещё {count} ошибок. Их можно повторить через кнопку «Повторить ошибки».",
+        "correct_explanation": "Короткое объяснение",
+        "repeat_for": "Что повторить",
+        "what_to_repeat": "📚 Что повторить:",
+        "no_wrong_answers": "🎉 Отлично! В этом тесте ошибок нет.",
+        "source_topic": "Тема",
+        "source_pages": "стр. {pages}",
     },
 }
 
@@ -193,7 +215,8 @@ def normalize_language(language_code: str | None) -> str:
 
 def t(language_code: str | None, key: str, **kwargs: object) -> str:
     language = normalize_language(language_code)
-    template = MESSAGES[language].get(key, MESSAGES[DEFAULT_LANGUAGE][key])
+    messages = MESSAGES.get(language, MESSAGES[DEFAULT_LANGUAGE])
+    template = messages.get(key) or MESSAGES[DEFAULT_LANGUAGE].get(key) or key
     return template.format(**kwargs)
 
 

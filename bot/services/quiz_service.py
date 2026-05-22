@@ -166,18 +166,16 @@ def format_answer_feedback(question: dict[str, Any], selected_index: int, langua
     language = normalize_language(language_code)
     correct_index = question["correct_index"]
     is_correct = selected_index == correct_index
-    selected_label = chr(65 + selected_index)
     correct_label = chr(65 + correct_index)
     correct_answer = _localized(question["options"], language)[correct_index]
     explanation = _localized(question["explanation_correct"], language)
 
-    if not is_correct:
-        explanation = question.get("wrong_explanations", {}).get(language, {}).get(str(selected_index), explanation)
+    if is_correct:
+        return f"{t(language, 'correct')}\n{t(language, 'explanation')}: {explanation}"
 
-    status = t(language, "correct") if is_correct else t(language, "incorrect", selected=selected_label)
     return (
-        f"{status}\n\n"
-        f"{t(language, 'correct_answer')}: {correct_label}. {correct_answer}\n\n"
+        f"{t(language, 'incorrect')}\n"
+        f"{t(language, 'correct_answer')}: {correct_label}. {correct_answer}\n"
         f"{t(language, 'explanation')}: {explanation}"
     )
 
@@ -255,16 +253,27 @@ def format_mistakes_review(
         selected_index = answer["selected_index"]
         correct_index = question["correct_index"]
         options = _localized(question["options"], language)
-        why_wrong = question.get("wrong_explanations", {}).get(language, {}).get(
-            str(selected_index),
-            _localized(question["explanation_correct"], language),
-        )
+        why_wrong = get_wrong_explanation(question, selected_index, language)
+        source = _format_first_source(question, language)
         lines.extend(
             [
-                f"{number}. {t(language, 'mistake_question')}: {_localized(question['question'], language)}",
-                f"{t(language, 'selected_answer')}: {chr(65 + selected_index)}. {options[selected_index]}",
-                f"{t(language, 'correct_answer')}: {chr(65 + correct_index)}. {options[correct_index]}",
-                f"{t(language, 'why_wrong')}: {why_wrong}",
+                f"{number}. {t(language, 'mistake_question')}:",
+                _localized(question["question"], language),
+                "",
+                f"{t(language, 'selected_answer')}:",
+                f"{chr(65 + selected_index)}. {options[selected_index]}",
+                "",
+                f"{t(language, 'correct_answer')}:",
+                f"{chr(65 + correct_index)}. {options[correct_index]}",
+                "",
+                f"{t(language, 'why_wrong')}:",
+                why_wrong,
+                "",
+                f"{t(language, 'correct_explanation')}:",
+                _localized(question["explanation_correct"], language),
+                "",
+                f"{t(language, 'repeat_for')}:",
+                source or "-",
                 "",
             ]
         )
@@ -274,6 +283,42 @@ def format_mistakes_review(
         lines.append(t(language, "more_mistakes", count=remaining))
 
     return "\n".join(lines).strip()
+
+
+def format_repeat_sources(
+    questions: list[dict[str, Any]],
+    answers: list[dict[str, Any]],
+    language_code: str,
+) -> str:
+    language = normalize_language(language_code)
+    wrong_questions = [questions[answer["question_index"]] for answer in answers if not answer["is_correct"]]
+    if not wrong_questions:
+        return t(language, "no_wrong_answers")
+
+    lines = [t(language, "what_to_repeat")]
+    seen: set[str] = set()
+    item_number = 1
+    for question in wrong_questions:
+        for source in question.get("source_refs", []):
+            book = _localized(source["book"], language)
+            pages = _format_pages(source.get("page_start"), source.get("page_end"))
+            section = _localized(source["section"], language)
+            key = f"{book}|{pages}|{section}"
+            if key in seen:
+                continue
+            lines.extend(
+                [
+                    f"{item_number}. {book} - {_format_source_pages(pages, language)}",
+                    f"   {t(language, 'source_topic')}: {section}",
+                ]
+            )
+            seen.add(key)
+            item_number += 1
+
+    if item_number == 1:
+        lines.append(t(language, "no_sources"))
+
+    return "\n".join(lines)
 
 
 def _format_pages(page_start: int | None, page_end: int | None) -> str:
@@ -287,6 +332,29 @@ def _format_pages(page_start: int | None, page_end: int | None) -> str:
 def _localized(value: dict[str, Any], language_code: str) -> Any:
     language = normalize_language(language_code)
     return value.get(language) or value.get(DEFAULT_LANGUAGE)
+
+
+def get_wrong_explanation(question: dict[str, Any], selected_index: int, language_code: str) -> str:
+    language = normalize_language(language_code)
+    return question.get("wrong_explanations", {}).get(language, {}).get(
+        str(selected_index),
+        _localized(question["explanation_correct"], language),
+    )
+
+
+def _format_first_source(question: dict[str, Any], language_code: str) -> str | None:
+    source_refs = question.get("source_refs", [])
+    if not source_refs:
+        return None
+    source = source_refs[0]
+    book = _localized(source["book"], language_code)
+    pages = _format_pages(source.get("page_start"), source.get("page_end"))
+    return f"{book}, {_format_source_pages(pages, language_code)}."
+
+
+def _format_source_pages(pages: str, language_code: str) -> str:
+    language = normalize_language(language_code)
+    return t(language, "source_pages", pages=pages)
 
 
 def _format_number(value: float | int) -> str:

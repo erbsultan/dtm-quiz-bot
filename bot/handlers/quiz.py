@@ -4,7 +4,7 @@ from typing import Any
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup, Message
 
 from bot.config import settings
 from bot.db.database import async_session_factory
@@ -23,6 +23,7 @@ from bot.services.quiz_service import (
     format_answer_feedback,
     format_mistakes_review,
     format_question,
+    format_repeat_sources,
     format_result,
     get_or_create_user,
     get_user_exam_profile_code,
@@ -31,6 +32,7 @@ from bot.services.quiz_service import (
 )
 from bot.services.progress_service import get_attempt_comparison, get_mistake_question_ids
 from bot.services.scoring_service import calculate_score, get_exam_profile
+from bot.utils.text import safe_join_sections, split_long_message
 
 router = Router()
 
@@ -51,7 +53,11 @@ async def show_quiz_sources(message: Message, state: FSMContext) -> None:
         return
 
     await _prepare_quiz_state(state, questions, language_code, mode="sample")
-    await message.answer(build_sources_message(questions, language_code), reply_markup=start_quiz_keyboard(language_code))
+    await _send_split_message(
+        message,
+        build_sources_message(questions, language_code),
+        reply_markup=start_quiz_keyboard(language_code),
+    )
 
 
 @router.message(F.text.in_(REPEAT_MISTAKES_TEXTS))
@@ -79,7 +85,11 @@ async def repeat_mistakes(message: Message, state: FSMContext) -> None:
 
     await _prepare_quiz_state(state, questions, language_code, mode="mistake_review")
     await message.answer(t(language_code, "mistake_review_sources"))
-    await message.answer(build_sources_message(questions, language_code), reply_markup=start_quiz_keyboard(language_code))
+    await _send_split_message(
+        message,
+        build_sources_message(questions, language_code),
+        reply_markup=start_quiz_keyboard(language_code),
+    )
 
 
 @router.callback_query(F.data == "quiz:begin")
@@ -172,11 +182,17 @@ async def _finish_quiz(callback: CallbackQuery, state: FSMContext) -> None:
         )
         comparison = await get_attempt_comparison(session, attempt.user_id, attempt.id)
 
-    await callback.message.answer(format_result(correct_count, len(questions), scoring_result, language_code))
-    await callback.message.answer(format_attempt_comparison(comparison, language_code))
+    sections = [
+        format_result(correct_count, len(questions), scoring_result, language_code),
+        format_attempt_comparison(comparison, language_code),
+    ]
     mistakes_review = format_mistakes_review(questions, answers, language_code)
     if mistakes_review:
-        await callback.message.answer(mistakes_review)
+        sections.append(mistakes_review)
+    sections.append(format_repeat_sources(questions, answers, language_code))
+
+    for text in safe_join_sections(sections):
+        await callback.message.answer(text)
     await state.clear()
     await callback.answer()
 
@@ -196,3 +212,14 @@ async def _prepare_quiz_state(
         language_code=language_code,
         mode=mode,
     )
+
+
+async def _send_split_message(
+    message: Message,
+    text: str,
+    reply_markup: InlineKeyboardMarkup | None = None,
+) -> None:
+    chunks = split_long_message(text)
+    for index, chunk in enumerate(chunks):
+        markup = reply_markup if index == len(chunks) - 1 else None
+        await message.answer(chunk, reply_markup=markup)

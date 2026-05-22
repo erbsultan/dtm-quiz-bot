@@ -7,6 +7,7 @@ from bot.services.progress_service import (
     calculate_subject_performance,
     calculate_topic_performance,
     determine_pair_trend,
+    prioritize_mistake_rows,
     select_mistake_question_ids,
 )
 
@@ -65,3 +66,13 @@ def test_select_mistake_question_ids():
     rows = [("105", "latest"), ("101", "older"), ("104", "oldest")]
 
     assert select_mistake_question_ids(rows, limit=2) == ["105", "101"]
+
+
+def test_prioritize_mistake_rows_by_count_then_recency():
+    rows = [
+        {"question_id": "101", "wrong_count": 1, "last_wrong_at": "2026-05-20T10:00:00"},
+        {"question_id": "102", "wrong_count": 3, "last_wrong_at": "2026-05-19T10:00:00"},
+        {"question_id": "103", "wrong_count": 3, "last_wrong_at": "2026-05-21T10:00:00"},
+    ]
+
+    assert prioritize_mistake_rows(rows, limit=2) == ["103", "102"]
