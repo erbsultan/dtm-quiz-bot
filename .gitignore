@@ -21,7 +21,11 @@ data/private/
 # Database
 *.sqlite3
 *.db
+*.dump
+*.sql
+*.backup
 postgres_data/
+pgdata/
 
 # OS / IDE
 .DS_Store

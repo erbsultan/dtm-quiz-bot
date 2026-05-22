@@ -1,0 +1,122 @@
+[
+  {
+    "id": "hist-ww2-001",
+    "subject": "History",
+    "topic": "World War II",
+    "subtopic": "International conferences",
+    "question": "Which conference in 1945 discussed the post-war division of Germany and the creation of the United Nations?",
+    "options": ["Tehran Conference", "Yalta Conference", "Munich Conference", "Potsdam Conference"],
+    "correct_index": 1,
+    "explanation_correct": "The Yalta Conference brought together the Allied leaders in February 1945 to discuss post-war Europe and support plans for the United Nations.",
+    "wrong_explanations": {
+      "0": "The Tehran Conference happened earlier, in 1943, and focused mainly on opening a second front in Europe.",
+      "2": "The Munich Conference was held in 1938 before World War II and concerned Czechoslovakia.",
+      "3": "The Potsdam Conference happened after Germany surrendered, later in 1945."
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": "Jahon tarixi, 10-sinf",
+        "page_start": 142,
+        "page_end": 145,
+        "section": "Ikkinchi Jahon urushi konferensiyalari"
+      }
+    ]
+  },
+  {
+    "id": "math-algebra-001",
+    "subject": "Mathematics",
+    "topic": "Algebra",
+    "subtopic": "Quadratic equations",
+    "question": "What are the roots of x^2 - 5x + 6 = 0?",
+    "options": ["1 and 6", "2 and 3", "-2 and -3", "0 and 5"],
+    "correct_index": 1,
+    "explanation_correct": "The expression factors as (x - 2)(x - 3), so the roots are 2 and 3.",
+    "wrong_explanations": {
+      "0": "1 and 6 multiply to 6, but their sum is 7, not 5.",
+      "2": "-2 and -3 would produce x^2 + 5x + 6.",
+      "3": "0 and 5 multiply to 0, not 6."
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": "Algebra, 9-sinf",
+        "page_start": 88,
+        "page_end": 91,
+        "section": "Kvadrat tenglamalarni ko'paytuvchilarga ajratish"
+      }
+    ]
+  },
+  {
+    "id": "bio-cell-001",
+    "subject": "Biology",
+    "topic": "Cell biology",
+    "subtopic": "Organelles",
+    "question": "Which organelle is mainly responsible for producing ATP in eukaryotic cells?",
+    "options": ["Ribosome", "Mitochondrion", "Golgi apparatus", "Nucleus"],
+    "correct_index": 1,
+    "explanation_correct": "Mitochondria perform cellular respiration and produce most of the cell's ATP.",
+    "wrong_explanations": {
+      "0": "Ribosomes synthesize proteins, not ATP.",
+      "2": "The Golgi apparatus modifies and packages molecules.",
+      "3": "The nucleus stores genetic information and controls cell activities."
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": "Biologiya, 10-sinf",
+        "page_start": 35,
+        "page_end": 38,
+        "section": "Hujayra organoidlari"
+      }
+    ]
+  },
+  {
+    "id": "chem-periodic-001",
+    "subject": "Chemistry",
+    "topic": "Periodic table",
+    "subtopic": "Chemical symbols",
+    "question": "What is the chemical symbol for sodium?",
+    "options": ["S", "So", "Na", "N"],
+    "correct_index": 2,
+    "explanation_correct": "Sodium's symbol is Na, from the Latin name natrium.",
+    "wrong_explanations": {
+      "0": "S is the symbol for sulfur.",
+      "1": "So is not a standard chemical symbol.",
+      "3": "N is the symbol for nitrogen."
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": "Kimyo, 8-sinf",
+        "page_start": 20,
+        "page_end": 24,
+        "section": "Kimyoviy elementlar va belgilar"
+      }
+    ]
+  },
+  {
+    "id": "uzbek-lit-001",
+    "subject": "Uzbek Literature",
+    "topic": "Classical literature",
+    "subtopic": "Alisher Navoiy",
+    "question": "Who wrote the collection of poems known as 'Xamsa' in Uzbek classical literature?",
+    "options": ["Bobur", "Alisher Navoiy", "Furqat", "Muqimiy"],
+    "correct_index": 1,
+    "explanation_correct": "Alisher Navoiy created the Uzbek 'Xamsa', a major work in Turkic classical literature.",
+    "wrong_explanations": {
+      "0": "Bobur is famous for the Boburnoma and his poetry, but not the Uzbek Xamsa.",
+      "2": "Furqat belongs to a later literary period.",
+      "3": "Muqimiy is known for later satirical and lyrical works."
+    },
+    "difficulty": "medium",
+    "source_refs": [
+      {
+        "book": "Adabiyot, 10-sinf",
+        "page_start": 66,
+        "page_end": 73,
+        "section": "Alisher Navoiy ijodi"
+      }
+    ]
+  }
+]
