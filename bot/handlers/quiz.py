@@ -4,16 +4,18 @@ from typing import Any
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, Message
+from aiogram.types import CallbackQuery, FSInputFile, InlineKeyboardMarkup, Message
 
 from bot.config import settings
 from bot.db.database import async_session_factory
 from bot.keyboards import (
+    materials_after_open_keyboard,
+    main_menu_keyboard,
+    preparation_keyboard,
     REPEAT_MISTAKES_TEXTS,
     START_QUIZ_TEXTS,
     next_question_keyboard,
     options_keyboard,
-    start_quiz_keyboard,
 )
 from bot.loader import QuestionLoaderError, load_questions
 from bot.locales import t
@@ -30,6 +32,7 @@ from bot.services.quiz_service import (
     get_user_language,
     save_quiz_attempt,
 )
+from bot.services.materials_service import get_materials_to_send
 from bot.services.progress_service import get_attempt_comparison, get_mistake_question_ids
 from bot.services.scoring_service import calculate_score, get_exam_profile
 from bot.utils.text import safe_join_sections, split_long_message
@@ -56,7 +59,7 @@ async def show_quiz_sources(message: Message, state: FSMContext) -> None:
     await _send_split_message(
         message,
         build_sources_message(questions, language_code),
-        reply_markup=start_quiz_keyboard(language_code),
+        reply_markup=preparation_keyboard(language_code),
     )
 
 
@@ -88,8 +91,41 @@ async def repeat_mistakes(message: Message, state: FSMContext) -> None:
     await _send_split_message(
         message,
         build_sources_message(questions, language_code),
-        reply_markup=start_quiz_keyboard(language_code),
+        reply_markup=preparation_keyboard(language_code),
     )
+
+
+@router.callback_query(F.data == "quiz:materials")
+async def open_materials(callback: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    questions: list[dict[str, Any]] = data.get("questions", [])
+    language_code = data.get("language_code", "uz")
+
+    for material in get_materials_to_send(questions, language_code):
+        if material["distribution"] == "send_excerpt" and material["path"]:
+            await callback.message.answer_document(
+                FSInputFile(material["path"]),
+                caption=material["text"],
+            )
+            continue
+
+        text = material["fallback_text"] if material["distribution"] == "send_excerpt" else material["text"]
+        await _send_split_callback_message(callback, text)
+
+    await callback.message.answer(
+        t(language_code, "start_test"),
+        reply_markup=materials_after_open_keyboard(language_code),
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data == "quiz:menu")
+async def back_to_menu(callback: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    language_code = data.get("language_code", "uz")
+    await state.clear()
+    await callback.message.answer(t(language_code, "welcome"), reply_markup=main_menu_keyboard(language_code))
+    await callback.answer()
 
 
 @router.callback_query(F.data == "quiz:begin")
@@ -223,3 +259,8 @@ async def _send_split_message(
     for index, chunk in enumerate(chunks):
         markup = reply_markup if index == len(chunks) - 1 else None
         await message.answer(chunk, reply_markup=markup)
+
+
+async def _send_split_callback_message(callback: CallbackQuery, text: str) -> None:
+    for chunk in split_long_message(text):
+        await callback.message.answer(chunk)

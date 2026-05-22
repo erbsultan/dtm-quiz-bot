@@ -52,7 +52,10 @@
         "section": {
           "uz": "Ikkinchi Jahon urushi konferensiyalari",
           "ru": "Конференции Второй мировой войны"
-        }
+        },
+        "public_url": "https://official-source.example/world_history_10.pdf",
+        "local_excerpt_path": "materials/ru/history/world_history_10_142_145.pdf",
+        "distribution": "send_excerpt"
       }
     ]
   },
@@ -67,8 +70,18 @@
       "ru": "Какая должность занимала важное место в центральном управлении государства Амира Темура?"
     },
     "options": {
-      "uz": ["Devonbegi", "Qozi", "Mirob", "Dorug'a"],
-      "ru": ["Диванбеги", "Кази", "Мираб", "Даруга"]
+      "uz": [
+        "Devonbegi",
+        "Qozi",
+        "Mirob",
+        "Dorug'a"
+      ],
+      "ru": [
+        "Диванбеги",
+        "Кази",
+        "Мираб",
+        "Даруга"
+      ]
     },
     "correct_index": 0,
     "explanation_correct": {
@@ -99,7 +112,10 @@
         "section": {
           "uz": "Amir Temur davlatining boshqaruvi",
           "ru": "Управление государством Амира Темура"
-        }
+        },
+        "public_url": "https://official-source.example/uzbekistan_history_10.pdf",
+        "local_excerpt_path": "materials/ru/uzbekistan_history/uzbekistan_history_10_58_63.pdf",
+        "distribution": "send_excerpt"
       }
     ]
   },
@@ -156,7 +172,10 @@
         "section": {
           "uz": "Present Perfect",
           "ru": "Present Perfect"
-        }
+        },
+        "public_url": "https://official-source.example/english_10.pdf",
+        "local_excerpt_path": "materials/ru/foreign_language/english_10_34_37.pdf",
+        "distribution": "link_only"
       }
     ]
   },
@@ -171,8 +190,18 @@
       "ru": "Найдите корни уравнения x^2 - 5x + 6 = 0."
     },
     "options": {
-      "uz": ["1 va 6", "2 va 3", "-2 va -3", "0 va 5"],
-      "ru": ["1 и 6", "2 и 3", "-2 и -3", "0 и 5"]
+      "uz": [
+        "1 va 6",
+        "2 va 3",
+        "-2 va -3",
+        "0 va 5"
+      ],
+      "ru": [
+        "1 и 6",
+        "2 и 3",
+        "-2 и -3",
+        "0 и 5"
+      ]
     },
     "correct_index": 1,
     "explanation_correct": {
@@ -203,7 +232,10 @@
         "section": {
           "uz": "Kvadrat tenglamalar",
           "ru": "Квадратные уравнения"
-        }
+        },
+        "public_url": "https://official-source.example/algebra_9.pdf",
+        "local_excerpt_path": "materials/ru/math/algebra_9_88_91.pdf",
+        "distribution": "text_only"
       }
     ]
   },
@@ -218,8 +250,18 @@
       "ru": "В каком ряду приведены только имена прилагательные?"
     },
     "options": {
-      "uz": ["tez, chiroyli, baland", "kitob, daftar, qalam", "o'qidi, yozdi, keldi", "men, sen, u"],
-      "ru": ["быстрый, красивый, высокий", "книга, тетрадь, карандаш", "читал, писал, пришёл", "я, ты, он"]
+      "uz": [
+        "tez, chiroyli, baland",
+        "kitob, daftar, qalam",
+        "o'qidi, yozdi, keldi",
+        "men, sen, u"
+      ],
+      "ru": [
+        "быстрый, красивый, высокий",
+        "книга, тетрадь, карандаш",
+        "читал, писал, пришёл",
+        "я, ты, он"
+      ]
     },
     "correct_index": 0,
     "explanation_correct": {
@@ -250,7 +292,10 @@
         "section": {
           "uz": "Sifat so'z turkumi",
           "ru": "Имя прилагательное"
-        }
+        },
+        "public_url": "https://official-source.example/native_language_9.pdf",
+        "local_excerpt_path": "materials/ru/native_language/native_language_9_44_48.pdf",
+        "distribution": "send_excerpt"
       }
     ]
   }

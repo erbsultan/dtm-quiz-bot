@@ -22,6 +22,9 @@ MESSAGES = {
             "Statistikam bo'limida natijalaringizni ko'rishingiz mumkin."
         ),
         "start_now": "Boshlash",
+        "open_materials": "📂 Materiallarni ochish",
+        "start_test": "▶️ Testni boshlash",
+        "back_to_menu": "Menyuga qaytish",
         "next_question": "Keyingi savol",
         "question_header": "Savol {number}/{total}",
         "subject": "Fan",
@@ -95,6 +98,11 @@ MESSAGES = {
         "no_wrong_answers": "🎉 Ajoyib! Bu testda xatolar yo'q.",
         "source_topic": "Mavzu",
         "source_pages": "{pages}-betlar",
+        "materials_missing_file": (
+            "Fayl hozircha lokal papkada topilmadi. Takrorlang: {book}, {pages}-betlar. Mavzu: {section}"
+        ),
+        "materials_link": "{book}, {pages}-betlar. Mavzu: {section}\nHavola: {url}",
+        "materials_text_only": "{book}, {pages}-betlar. Mavzu: {section}",
         },
     "ru": {
         "choose_language": "Выберите язык:",
@@ -115,6 +123,9 @@ MESSAGES = {
             "В разделе Моя статистика доступны ваши результаты."
         ),
         "start_now": "Начать",
+        "open_materials": "📂 Открыть материалы",
+        "start_test": "▶️ Начать тест",
+        "back_to_menu": "Назад в меню",
         "next_question": "Следующий вопрос",
         "question_header": "Вопрос {number}/{total}",
         "subject": "Предмет",
@@ -186,6 +197,11 @@ MESSAGES = {
         "no_wrong_answers": "🎉 Отлично! В этом тесте ошибок нет.",
         "source_topic": "Тема",
         "source_pages": "стр. {pages}",
+        "materials_missing_file": (
+            "Файл пока не найден локально. Повторите: {book}, стр. {pages}. Тема: {section}"
+        ),
+        "materials_link": "{book}, стр. {pages}. Тема: {section}\nСсылка: {url}",
+        "materials_text_only": "{book}, стр. {pages}. Тема: {section}",
     },
 }
 

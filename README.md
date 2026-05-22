@@ -2,7 +2,7 @@
 
 Telegram bot for Uzbekistan university entrance exam preparation. The project is built as a public portfolio backend project with a clean, extendable Python codebase.
 
-Stage 4 improves the learning flow so the bot behaves more like a DTM tutor: cleaner immediate feedback, detailed mistake review, repeat recommendations from sources, and safer Telegram message splitting.
+Stage 5 adds study materials support before quizzes: the bot can show required sources and send local PDF excerpts when they exist.
 
 ## Features
 
@@ -24,6 +24,8 @@ Stage 4 improves the learning flow so the bot behaves more like a DTM tutor: cle
 - Detailed final mistake explanations
 - Source-based "what to repeat" recommendations
 - Telegram message splitting for long result/review messages
+- Pre-quiz study materials screen
+- Optional local PDF excerpt sending
 - Docker Compose setup with PostgreSQL
 - Alembic migrations
 
@@ -60,6 +62,7 @@ data/
   exam_profiles.example.json
 alembic/
 tests/
+materials.example/
 ```
 
 ## Environment Variables
@@ -233,6 +236,84 @@ Stage 4 improves wrong-answer learning:
 
 The `Repeat mistakes` mode prioritizes questions missed most often, with recent mistakes used as the next priority.
 
+## Study Materials
+
+Stage 5 adds a preparation step before each quiz. After pressing Start quiz, the bot shows books/pages/topics and two buttons:
+
+- Open materials
+- Start test
+
+Real materials must be stored locally in `materials/`, which is ignored by Git. Do not commit real PDFs, copyrighted books, or private materials.
+
+Suggested structure:
+
+```text
+materials/
+  uz/
+    tarix/
+    matematika/
+    ona_tili/
+    chet_tili/
+    ozbekiston_tarixi/
+  ru/
+    history/
+    math/
+    native_language/
+    foreign_language/
+    uzbekistan_history/
+```
+
+The committed `materials.example/README.md` documents the structure without including real files.
+
+`source_refs` can include optional material fields:
+
+```json
+{
+  "book": {
+    "uz": "Jahon tarixi, 10-sinf",
+    "ru": "Всемирная история, 10 класс"
+  },
+  "page_start": 142,
+  "page_end": 145,
+  "section": {
+    "uz": "Ikkinchi Jahon urushi konferensiyalari",
+    "ru": "Конференции Второй мировой войны"
+  },
+  "public_url": "https://official-source.example/book.pdf",
+  "local_excerpt_path": "materials/ru/history/world_history_10_142_145.pdf",
+  "distribution": "send_excerpt"
+}
+```
+
+Distribution values:
+
+- `send_excerpt`: send the local PDF if it exists; otherwise show a friendly fallback
+- `link_only`: show the public URL if available
+- `text_only`: only show book/pages/topic
+
+Local paths are checked with `pathlib.Path` and must stay inside `materials/`. Paths with `..` are rejected.
+
+### Extract PDF Pages
+
+Use the helper script to create local excerpts:
+
+```bash
+python scripts/extract_pdf_pages.py \
+  --input data/raw/jahon_tarixi_10.pdf \
+  --pages 142-145 \
+  --output materials/uz/tarix/jahon_tarixi_10_142_145.pdf
+```
+
+If book page numbers do not match PDF indexes, use `--offset`:
+
+```bash
+python scripts/extract_pdf_pages.py \
+  --input data/raw/jahon_tarixi_10.pdf \
+  --pages 142-145 \
+  --offset -2 \
+  --output materials/uz/tarix/jahon_tarixi_10_142_145.pdf
+```
+
 ## Security Notes
 
 - Do not commit `.env`.
@@ -240,4 +321,5 @@ The `Repeat mistakes` mode prioritizes questions missed most often, with recent 
 - Do not commit copyrighted PDFs.
 - Do not commit full private question banks.
 - Do not commit `data/questions.json`.
+- Do not commit real files from `materials/`.
 - Keep public examples small and safe.

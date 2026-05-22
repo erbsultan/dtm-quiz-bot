@@ -27,6 +27,7 @@ services:
     command: sh -c "alembic upgrade head && python -m bot.main"
     volumes:
       - ./data:/app/data:ro
+      - ./materials:/app/materials:ro
 
 volumes:
   postgres_data:

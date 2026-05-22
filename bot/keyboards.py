@@ -51,3 +51,21 @@ def start_quiz_keyboard(language_code: str = "uz") -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text=t(language_code, "start_now"), callback_data="quiz:begin")]]
     )
+
+
+def preparation_keyboard(language_code: str = "uz") -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=t(language_code, "open_materials"), callback_data="quiz:materials")],
+            [InlineKeyboardButton(text=t(language_code, "start_test"), callback_data="quiz:begin")],
+        ]
+    )
+
+
+def materials_after_open_keyboard(language_code: str = "uz") -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=t(language_code, "start_test"), callback_data="quiz:begin")],
+            [InlineKeyboardButton(text=t(language_code, "back_to_menu"), callback_data="quiz:menu")],
+        ]
+    )

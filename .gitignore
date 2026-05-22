@@ -17,6 +17,7 @@ data/questions.json
 data/*.pdf
 data/raw/
 data/private/
+materials/
 
 # Database
 *.sqlite3
