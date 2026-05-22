@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import BigInteger, Boolean, DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy import BigInteger, Boolean, DateTime, Float, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from bot.db.database import Base
@@ -15,6 +15,8 @@ class User(Base):
     username: Mapped[Optional[str]] = mapped_column(String(255))
     first_name: Mapped[Optional[str]] = mapped_column(String(255))
     last_name: Mapped[Optional[str]] = mapped_column(String(255))
+    language_code: Mapped[str] = mapped_column(String(5), default="uz", server_default="uz")
+    exam_profile_code: Mapped[Optional[str]] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     attempts: Mapped[list["TestAttempt"]] = relationship(back_populates="user", cascade="all, delete-orphan")
@@ -32,6 +34,9 @@ class TestAttempt(Base):
     correct_count: Mapped[int] = mapped_column(Integer)
     wrong_count: Mapped[int] = mapped_column(Integer)
     accuracy_percent: Mapped[float] = mapped_column(Float)
+    score: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")
+    max_score: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")
+    score_percent: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     finished_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 

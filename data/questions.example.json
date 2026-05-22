@@ -1,121 +1,256 @@
 [
   {
-    "id": "hist-ww2-001",
-    "subject": "History",
-    "topic": "World War II",
-    "subtopic": "International conferences",
-    "question": "Which conference in 1945 discussed the post-war division of Germany and the creation of the United Nations?",
-    "options": ["Tehran Conference", "Yalta Conference", "Munich Conference", "Potsdam Conference"],
-    "correct_index": 1,
-    "explanation_correct": "The Yalta Conference brought together the Allied leaders in February 1945 to discuss post-war Europe and support plans for the United Nations.",
-    "wrong_explanations": {
-      "0": "The Tehran Conference happened earlier, in 1943, and focused mainly on opening a second front in Europe.",
-      "2": "The Munich Conference was held in 1938 before World War II and concerned Czechoslovakia.",
-      "3": "The Potsdam Conference happened after Germany surrendered, later in 1945."
+    "id": 101,
+    "subject": "tarix",
+    "subject_group": "special_1",
+    "topic": "Ikkinchi Jahon urushi",
+    "subtopic": "Konferensiyalar",
+    "question": {
+      "uz": "Ikkinchi Jahon urushi davrida bo'lib o'tgan konferensiyalarni xronologik tartibda joylashtiring.",
+      "ru": "Расположите конференции Второй мировой войны в хронологическом порядке."
     },
-    "difficulty": "easy",
-    "source_refs": [
-      {
-        "book": "Jahon tarixi, 10-sinf",
-        "page_start": 142,
-        "page_end": 145,
-        "section": "Ikkinchi Jahon urushi konferensiyalari"
-      }
-    ]
-  },
-  {
-    "id": "math-algebra-001",
-    "subject": "Mathematics",
-    "topic": "Algebra",
-    "subtopic": "Quadratic equations",
-    "question": "What are the roots of x^2 - 5x + 6 = 0?",
-    "options": ["1 and 6", "2 and 3", "-2 and -3", "0 and 5"],
-    "correct_index": 1,
-    "explanation_correct": "The expression factors as (x - 2)(x - 3), so the roots are 2 and 3.",
-    "wrong_explanations": {
-      "0": "1 and 6 multiply to 6, but their sum is 7, not 5.",
-      "2": "-2 and -3 would produce x^2 + 5x + 6.",
-      "3": "0 and 5 multiply to 0, not 6."
+    "options": {
+      "uz": [
+        "Yalta / Qrim / Potsdam",
+        "Tehron / Qrim / Potsdam",
+        "Yalta / Tehron / Potsdam",
+        "Tehron / Potsdam / Qrim"
+      ],
+      "ru": [
+        "Ялта / Крым / Потсдам",
+        "Тегеран / Крым / Потсдам",
+        "Ялта / Тегеран / Потсдам",
+        "Тегеран / Потсдам / Крым"
+      ]
     },
-    "difficulty": "easy",
-    "source_refs": [
-      {
-        "book": "Algebra, 9-sinf",
-        "page_start": 88,
-        "page_end": 91,
-        "section": "Kvadrat tenglamalarni ko'paytuvchilarga ajratish"
-      }
-    ]
-  },
-  {
-    "id": "bio-cell-001",
-    "subject": "Biology",
-    "topic": "Cell biology",
-    "subtopic": "Organelles",
-    "question": "Which organelle is mainly responsible for producing ATP in eukaryotic cells?",
-    "options": ["Ribosome", "Mitochondrion", "Golgi apparatus", "Nucleus"],
     "correct_index": 1,
-    "explanation_correct": "Mitochondria perform cellular respiration and produce most of the cell's ATP.",
-    "wrong_explanations": {
-      "0": "Ribosomes synthesize proteins, not ATP.",
-      "2": "The Golgi apparatus modifies and packages molecules.",
-      "3": "The nucleus stores genetic information and controls cell activities."
+    "explanation_correct": {
+      "uz": "To'g'ri tartib: Tehron -> Qrim/Yalta -> Potsdam.",
+      "ru": "Правильный порядок: Тегеран -> Крым/Ялта -> Потсдам."
     },
-    "difficulty": "easy",
-    "source_refs": [
-      {
-        "book": "Biologiya, 10-sinf",
-        "page_start": 35,
-        "page_end": 38,
-        "section": "Hujayra organoidlari"
-      }
-    ]
-  },
-  {
-    "id": "chem-periodic-001",
-    "subject": "Chemistry",
-    "topic": "Periodic table",
-    "subtopic": "Chemical symbols",
-    "question": "What is the chemical symbol for sodium?",
-    "options": ["S", "So", "Na", "N"],
-    "correct_index": 2,
-    "explanation_correct": "Sodium's symbol is Na, from the Latin name natrium.",
     "wrong_explanations": {
-      "0": "S is the symbol for sulfur.",
-      "1": "So is not a standard chemical symbol.",
-      "3": "N is the symbol for nitrogen."
-    },
-    "difficulty": "easy",
-    "source_refs": [
-      {
-        "book": "Kimyo, 8-sinf",
-        "page_start": 20,
-        "page_end": 24,
-        "section": "Kimyoviy elementlar va belgilar"
+      "uz": {
+        "0": "Bu noto'g'ri, chunki Yalta va Qrim bir xil konferensiya hisoblanadi.",
+        "2": "Bu noto'g'ri, chunki Tehron konferensiyasi Yaltadan oldin bo'lgan.",
+        "3": "Bu noto'g'ri, chunki Potsdam Qrim/Yaltadan keyin bo'lgan."
+      },
+      "ru": {
+        "0": "Это неверно, потому что Ялта и Крым здесь обозначают одну конференцию.",
+        "2": "Это неверно, потому что Тегеранская конференция была раньше Ялтинской.",
+        "3": "Это неверно, потому что Потсдамская конференция была после Крымской/Ялтинской."
       }
-    ]
-  },
-  {
-    "id": "uzbek-lit-001",
-    "subject": "Uzbek Literature",
-    "topic": "Classical literature",
-    "subtopic": "Alisher Navoiy",
-    "question": "Who wrote the collection of poems known as 'Xamsa' in Uzbek classical literature?",
-    "options": ["Bobur", "Alisher Navoiy", "Furqat", "Muqimiy"],
-    "correct_index": 1,
-    "explanation_correct": "Alisher Navoiy created the Uzbek 'Xamsa', a major work in Turkic classical literature.",
-    "wrong_explanations": {
-      "0": "Bobur is famous for the Boburnoma and his poetry, but not the Uzbek Xamsa.",
-      "2": "Furqat belongs to a later literary period.",
-      "3": "Muqimiy is known for later satirical and lyrical works."
     },
     "difficulty": "medium",
     "source_refs": [
       {
-        "book": "Adabiyot, 10-sinf",
-        "page_start": 66,
-        "page_end": 73,
-        "section": "Alisher Navoiy ijodi"
+        "book": {
+          "uz": "Jahon tarixi, 10-sinf",
+          "ru": "Всемирная история, 10 класс"
+        },
+        "page_start": 142,
+        "page_end": 145,
+        "section": {
+          "uz": "Ikkinchi Jahon urushi konferensiyalari",
+          "ru": "Конференции Второй мировой войны"
+        }
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "subject": "ozbekiston_tarixi",
+    "subject_group": "mandatory",
+    "topic": "Amir Temur davlati",
+    "subtopic": "Davlat boshqaruvi",
+    "question": {
+      "uz": "Amir Temur davlatida markaziy boshqaruvda muhim o'rin tutgan lavozim qaysi?",
+      "ru": "Какая должность занимала важное место в центральном управлении государства Амира Темура?"
+    },
+    "options": {
+      "uz": ["Devonbegi", "Qozi", "Mirob", "Dorug'a"],
+      "ru": ["Диванбеги", "Кази", "Мираб", "Даруга"]
+    },
+    "correct_index": 0,
+    "explanation_correct": {
+      "uz": "Devonbegi moliya va devon ishlarini boshqarishda muhim mansab hisoblangan.",
+      "ru": "Диванбеги был важной должностью в управлении финансами и делами дивана."
+    },
+    "wrong_explanations": {
+      "uz": {
+        "1": "Qozi asosan sud-huquq ishlari bilan shug'ullangan.",
+        "2": "Mirob suv taqsimoti va sug'orish ishlariga mas'ul bo'lgan.",
+        "3": "Dorug'a mahalliy boshqaruv va nazorat vazifalarida uchraydi."
+      },
+      "ru": {
+        "1": "Кази занимался главным образом судебно-правовыми вопросами.",
+        "2": "Мираб отвечал за распределение воды и ирригацию.",
+        "3": "Даруга чаще связан с местным управлением и контролем."
+      }
+    },
+    "difficulty": "medium",
+    "source_refs": [
+      {
+        "book": {
+          "uz": "O'zbekiston tarixi, 10-sinf",
+          "ru": "История Узбекистана, 10 класс"
+        },
+        "page_start": 58,
+        "page_end": 63,
+        "section": {
+          "uz": "Amir Temur davlatining boshqaruvi",
+          "ru": "Управление государством Амира Темура"
+        }
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "subject": "chet_tili",
+    "subject_group": "special_2",
+    "topic": "English grammar",
+    "subtopic": "Present Perfect",
+    "question": {
+      "uz": "Choose the correct sentence.",
+      "ru": "Выберите правильное предложение."
+    },
+    "options": {
+      "uz": [
+        "I have visited Samarkand twice.",
+        "I has visited Samarkand twice.",
+        "I visited Samarkand since 2020.",
+        "I have visit Samarkand twice."
+      ],
+      "ru": [
+        "I have visited Samarkand twice.",
+        "I has visited Samarkand twice.",
+        "I visited Samarkand since 2020.",
+        "I have visit Samarkand twice."
+      ]
+    },
+    "correct_index": 0,
+    "explanation_correct": {
+      "uz": "Present Perfect tuzilishi: have/has + past participle. 'I' bilan 'have visited' ishlatiladi.",
+      "ru": "Present Perfect строится как have/has + past participle. С 'I' используется 'have visited'."
+    },
+    "wrong_explanations": {
+      "uz": {
+        "1": "'I' bilan 'has' emas, 'have' ishlatiladi.",
+        "2": "'Since 2020' davomiy bog'lanishni bildiradi; bu yerda Present Perfect kerak.",
+        "3": "'Have' dan keyin fe'lning past participle shakli kerak: visited."
+      },
+      "ru": {
+        "1": "С 'I' используется 'have', а не 'has'.",
+        "2": "'Since 2020' указывает связь с настоящим; нужен Present Perfect.",
+        "3": "После 'have' нужна форма past participle: visited."
+      }
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": {
+          "uz": "English, 10-sinf",
+          "ru": "Английский язык, 10 класс"
+        },
+        "page_start": 34,
+        "page_end": 37,
+        "section": {
+          "uz": "Present Perfect",
+          "ru": "Present Perfect"
+        }
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "subject": "matematika",
+    "subject_group": "mandatory",
+    "topic": "Algebra",
+    "subtopic": "Kvadrat tenglama",
+    "question": {
+      "uz": "x^2 - 5x + 6 = 0 tenglamaning ildizlarini toping.",
+      "ru": "Найдите корни уравнения x^2 - 5x + 6 = 0."
+    },
+    "options": {
+      "uz": ["1 va 6", "2 va 3", "-2 va -3", "0 va 5"],
+      "ru": ["1 и 6", "2 и 3", "-2 и -3", "0 и 5"]
+    },
+    "correct_index": 1,
+    "explanation_correct": {
+      "uz": "Tenglama (x - 2)(x - 3) ko'rinishida ajraladi, demak ildizlar 2 va 3.",
+      "ru": "Уравнение раскладывается как (x - 2)(x - 3), значит корни 2 и 3."
+    },
+    "wrong_explanations": {
+      "uz": {
+        "0": "1 va 6 ko'paytmasi 6, lekin yig'indisi 7.",
+        "2": "-2 va -3 x^2 + 5x + 6 tenglamasiga mos keladi.",
+        "3": "0 va 5 ko'paytmasi 0, 6 emas."
+      },
+      "ru": {
+        "0": "1 и 6 дают произведение 6, но сумма равна 7.",
+        "2": "-2 и -3 подходят для x^2 + 5x + 6.",
+        "3": "0 и 5 дают произведение 0, а не 6."
+      }
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": {
+          "uz": "Algebra, 9-sinf",
+          "ru": "Алгебра, 9 класс"
+        },
+        "page_start": 88,
+        "page_end": 91,
+        "section": {
+          "uz": "Kvadrat tenglamalar",
+          "ru": "Квадратные уравнения"
+        }
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "subject": "ona_tili",
+    "subject_group": "mandatory",
+    "topic": "Morfologiya",
+    "subtopic": "So'z turkumlari",
+    "question": {
+      "uz": "Qaysi qatorda faqat sifatlar berilgan?",
+      "ru": "В каком ряду приведены только имена прилагательные?"
+    },
+    "options": {
+      "uz": ["tez, chiroyli, baland", "kitob, daftar, qalam", "o'qidi, yozdi, keldi", "men, sen, u"],
+      "ru": ["быстрый, красивый, высокий", "книга, тетрадь, карандаш", "читал, писал, пришёл", "я, ты, он"]
+    },
+    "correct_index": 0,
+    "explanation_correct": {
+      "uz": "Tez, chiroyli, baland belgini bildiradi va sifat turkumiga kiradi.",
+      "ru": "Быстрый, красивый, высокий обозначают признаки и являются прилагательными."
+    },
+    "wrong_explanations": {
+      "uz": {
+        "1": "Bu so'zlar ot turkumiga kiradi.",
+        "2": "Bu so'zlar fe'l turkumiga kiradi.",
+        "3": "Bu so'zlar olmosh turkumiga kiradi."
+      },
+      "ru": {
+        "1": "Эти слова относятся к существительным.",
+        "2": "Эти слова относятся к глаголам.",
+        "3": "Эти слова относятся к местоимениям."
+      }
+    },
+    "difficulty": "easy",
+    "source_refs": [
+      {
+        "book": {
+          "uz": "Ona tili, 9-sinf",
+          "ru": "Родной язык, 9 класс"
+        },
+        "page_start": 44,
+        "page_end": 48,
+        "section": {
+          "uz": "Sifat so'z turkumi",
+          "ru": "Имя прилагательное"
+        }
       }
     ]
   }

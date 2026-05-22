@@ -1,0 +1,42 @@
+[
+  {
+    "code": "60310200",
+    "name": {
+      "uz": "Xalqaro munosabatlar",
+      "ru": "Международные отношения"
+    },
+    "max_score": 189.0,
+    "subjects": [
+      {
+        "subject": "ona_tili",
+        "subject_group": "mandatory",
+        "questions": 10,
+        "points_per_correct": 1.1
+      },
+      {
+        "subject": "matematika",
+        "subject_group": "mandatory",
+        "questions": 10,
+        "points_per_correct": 1.1
+      },
+      {
+        "subject": "ozbekiston_tarixi",
+        "subject_group": "mandatory",
+        "questions": 10,
+        "points_per_correct": 1.1
+      },
+      {
+        "subject": "tarix",
+        "subject_group": "special_1",
+        "questions": 30,
+        "points_per_correct": 3.1
+      },
+      {
+        "subject": "chet_tili",
+        "subject_group": "special_2",
+        "questions": 30,
+        "points_per_correct": 2.1
+      }
+    ]
+  }
+]

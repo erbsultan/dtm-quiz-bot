@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     database_url: str = Field(alias="DATABASE_URL")
     admin_ids: List[int] = Field(default_factory=list, alias="ADMIN_IDS")
     questions_file: str = Field(default="data/questions.example.json", alias="QUESTIONS_FILE")
+    exam_profiles_file: str = Field(default="data/exam_profiles.example.json", alias="EXAM_PROFILES_FILE")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
